@@ -1,0 +1,79 @@
+body {
+    display: flex;
+    flex-flow: row nowrap;
+    background-color: #282d40;
+    color: white;
+    height: 100vh;
+    margin: 0;
+}
+
+body > div > * {
+    margin-left: 16px;
+}
+
+body > div:nth-child(1) {
+    background-color: #1e2130;
+    width: 300px;
+    flex-basis: 300px;
+    flex-shrink: 0;
+}
+
+body > div:nth-child(2) {
+    overflow-y: auto;
+}
+
+ul {
+    padding: 0;
+    margin: 0 !important;
+}
+
+li {
+    display: block;
+    list-style-type: none;
+}
+
+a {
+    padding: 16px;
+    display: block;
+    color: white;
+    text-decoration: none;
+}
+
+a:hover {
+    background-color: #304375;
+}
+
+p {
+    overflow-y: auto;
+}
+
+input {
+    min-width: 300px;
+}
+
+input[type=url] {
+    background-color: #304375;
+    border: none;
+    color: white;
+}
+
+input[type=submit], button {
+    margin-top: 16px;
+    margin-bottom: 16px;
+    min-width: 128px;
+    padding: 16px 32px;
+    background-color: #1e2130;
+    color: white;
+    border: none;
+    border-radius: 16px;
+    cursor: pointer;
+}
+
+input[type=submit]:hover, button:hover {
+    background-color: #304375;
+}
+
+button:disabled {
+    background-color: rgba(48, 67, 117, 0.23);
+    cursor: auto;
+}

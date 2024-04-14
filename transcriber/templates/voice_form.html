@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    {{ title }}
+{% endblock %}
+
+{% block content %}
+    <h1>{{ title }}</h1>
+    <p id="request">Please allow microphone access</p>
+    <div id="controls" style="display: none;">
+        <button id="start">Start</button>
+        <button id="stop" disabled>Stop</button>
+    </div>
+    <div id="audio">
+
+    </div>
+    <form enctype="multipart/form-data" method="POST" id="form" style="display: none">
+        {% csrf_token %}
+        {{ form }}
+    </form>
+    <input type="submit" value="Transcribe" form="form" id="submit" style="display: none">
+
+    <script>
+        const start = document.getElementById('start');
+        const stop = document.getElementById('stop');
+        const request = document.getElementById('request');
+        const controls = document.getElementById('controls');
+        const audio = document.getElementById('audio');
+        const submit = document.getElementById('submit');
+        const fileInput = document.getElementById('id_file');
+        const log = console.log.bind(console);
+
+        navigator.mediaDevices.getUserMedia({audio: true}).then(stream => {
+            let chunks = [];
+            const recorder = new MediaRecorder(stream);
+            recorder.ondataavailable = e => {
+                chunks.push(e.data);
+                if (recorder.state === 'inactive') {
+                    createAudio(chunks);
+                }
+            };
+
+            start.addEventListener('click', e => {
+                submit.style.display = 'none';
+                document.getElementById('voice')?.remove();
+                start.disabled = true;
+                stop.disabled = false;
+                chunks = [];
+                recorder.start();
+            });
+
+            stop.addEventListener('click', e => {
+                stop.disabled = true;
+                recorder.stop();
+                start.disabled = false;
+            });
+
+            request.style.display = 'none';
+            controls.style.display = 'inherit';
+        }).catch(log);
+
+        function createAudio(data) {
+            let blob = new Blob(data, {type: 'audio/ogg'});
+            let mt = document.createElement('audio');
+            mt.controls = true;
+            mt.src = URL.createObjectURL(blob);
+            mt.id = 'voice';
+            audio.appendChild(mt);
+            let file = new File([blob], 'record.ogg', {type: 'audio/ogg', lastModified: new Date().getTime()});
+            let container = new DataTransfer();
+            container.items.add(file);
+            fileInput.files = container.files;
+            submit.style.display = 'inherit';
+        }
+    </script>
+{% endblock %}
